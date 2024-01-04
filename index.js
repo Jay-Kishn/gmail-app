@@ -72,7 +72,7 @@ async function listEmailThreads(auth) {
   
     const threadsRes = await gmail.users.threads.list({
       userId: 'me',
-      maxResults:2
+      maxResults:2 // set a limit on the results too may multiple API calls later
     });
   
     return threadsRes.data.threads || [];
@@ -86,7 +86,7 @@ async function listEmailThreads(auth) {
       for (const message of thread.data.messages) {
         for (const header of message.payload.headers) { //iterate through headers to find the sender IDs 
           if (header.name === 'From') {
-            const matching = header.value.match(/<([^>]+)>/); // regex to extract the email address inside <>
+            const matching = header.value.match(/<([^>]+)>/); // regex to extract the email address inside <> 
             participants.push(matching ? matching[1] : header.value); //if mail found in <> add, else add whole value
           }
         }
@@ -174,7 +174,7 @@ async function listEmailThreads(auth) {
         // first step is to retrieve the existing list of labels
   const labelsResponse = await gmail.users.labels.list({ userId: 'me' });
   const labels = labelsResponse.data.labels;
-  const labelName = 'onLeave' //set a label name
+  const labelName = 'LeaveResponses' //set a label name
 
   //  check if the label exists
   const existingLabel = labels.find(label => label.name === labelName);
@@ -251,7 +251,7 @@ function getRandomInterval(minSeconds, maxSeconds) {
       .catch(console.error)
       .finally(() => {
         // Schedule the next run after a random interval
-        const nextInterval = getRandomInterval(10,20);
+        const nextInterval = getRandomInterval(45,120);
         setTimeout(runIdentifyAndReplyToAddLabel, nextInterval);
       });
   }
